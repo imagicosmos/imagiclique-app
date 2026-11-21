@@ -1,0 +1,342 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Imagiclique – Testseite Video</title>
+<style>
+  :root { color-scheme: light dark; --acc:#16a34a; --line:#8884; --mut:#888; }
+  body { font:16px/1.45 system-ui, "Segoe UI", sans-serif; margin:0; padding:14px 14px 60px; max-width:720px; margin-inline:auto; }
+  h1 { font-size:20px; margin:4px 0 2px; } h2 { font-size:16px; margin:22px 0 8px; }
+  p { margin:6px 0; } .mut { color:var(--mut); font-size:14px; }
+  .card { border:1px solid var(--line); border-radius:14px; padding:12px; margin-top:12px; }
+  label { display:block; font-size:14px; color:var(--mut); margin-top:10px; }
+  input[type=number], select { font:inherit; padding:8px; border-radius:10px; border:1px solid var(--line); background:transparent; color:inherit; width:100%; box-sizing:border-box; }
+  .row { display:grid; grid-template-columns:1fr 1fr; gap:10px; }
+  button, .btn { font:inherit; font-weight:600; padding:12px 16px; border-radius:999px; border:1px solid var(--line); background:transparent; color:inherit; cursor:pointer; text-decoration:none; display:inline-block; }
+  button.primary { background:var(--acc); color:#fff; border-color:transparent; width:100%; margin-top:14px; }
+  button:disabled { opacity:.45; }
+  table { border-collapse:collapse; width:100%; font-size:14px; }
+  td { padding:4px 6px; border-bottom:1px solid var(--line); vertical-align:top; overflow-wrap:anywhere; } td:first-child { color:var(--mut); width:38%; }
+  .bad { color:#dc2626; font-weight:600; } .ok { color:var(--acc); font-weight:600; }
+  progress { width:100%; height:14px; margin-top:10px; }
+  video { width:100%; max-height:70vh; background:#000; border-radius:12px; margin-top:10px; }
+  textarea { width:100%; box-sizing:border-box; height:150px; font:12px/1.4 ui-monospace, Consolas, monospace; border-radius:10px; border:1px solid var(--line); background:transparent; color:inherit; padding:8px; }
+  .acts { display:flex; gap:10px; flex-wrap:wrap; margin-top:10px; }
+</style>
+</head>
+<body>
+<h1>Testseite: eigenes Video einlesen</h1>
+<p class="mut">Machbarkeitstest für Idee #10 (Schritt 0). Die Seite schneidet aus einem Handyvideo einen Ausschnitt heraus, bringt ihn auf 720 × 1280 und speichert ihn als MP4. Alles geschieht auf diesem Gerät, nichts wird hochgeladen. Stand der Testseite: 15.11.2026, Fassung 2.</p>
+
+<div class="card">
+  <input type="file" id="file" accept="video/*">
+  <div id="infobox" hidden>
+    <h2>Quelle</h2>
+    <table id="info"></table>
+  </div>
+</div>
+
+<div class="card" id="opts" hidden>
+  <div class="row">
+    <div><label for="start">Start (Sekunden)</label><input type="number" id="start" min="0" step="0.5" value="0"></div>
+    <div><label for="len">Länge (Sekunden)</label><input type="number" id="len" min="1" max="90" step="1" value="10"></div>
+  </div>
+  <div class="row">
+    <div><label for="fit">Hochformat</label><select id="fit"><option value="blur">Ganzes Bild, unscharfer Hintergrund</option><option value="cover">Zuschnitt (bildfüllend)</option></select></div>
+    <div><label for="snd">Ton</label><select id="snd"><option value="on">Originalton mitnehmen</option><option value="off">ohne Ton</option></select></div>
+  </div>
+  <button class="primary" id="go">Ausschnitt erzeugen</button>
+  <progress id="prog" value="0" max="1" hidden></progress>
+  <p class="mut" id="state"></p>
+</div>
+
+<div class="card" id="resbox" hidden>
+  <h2>Ergebnis</h2>
+  <table id="res"></table>
+  <video id="out" controls playsinline></video>
+  <div class="acts"><a class="btn" id="save" download="imagiclique-test.mp4">Speichern</a><button id="share">Teilen</button></div>
+</div>
+
+<div class="card">
+  <h2>Protokoll</h2>
+  <p class="mut">Bitte nach jedem Test kopieren und zurückmelden – auch, ob Farben und Ton im Ergebnis stimmen.</p>
+  <textarea id="log" readonly></textarea>
+  <div class="acts"><button id="copy">Protokoll kopieren</button></div>
+</div>
+
+<script src="vendor/mp4box.all.min.js"></script>
+<script src="vendor/mp4-muxer.min.js"></script>
+<script>
+'use strict';
+const $ = id => document.getElementById(id);
+const OUT_W = 720, OUT_H = 1280, FPS = 30;
+const sleep = ms => new Promise(r => setTimeout(r, ms));
+const log = (...a) => { const t = a.map(x => typeof x === 'string' ? x : JSON.stringify(x)).join(' '); $('log').value += t + '\n'; $('log').scrollTop = 1e9; console.log(t); };
+const rows = (el, list) => { el.textContent = ''; for (const [k, v, cls] of list) { const tr = el.insertRow(); tr.insertCell().textContent = k; const c = tr.insertCell(); c.textContent = v; if (cls) c.className = cls; } };
+const fmt = (n, d = 1) => (Math.round(n * 10 ** d) / 10 ** d).toLocaleString('de-DE');
+
+log('Testseite Fassung 2 · Browser: ' + navigator.userAgent);
+log('WebCodecs: VideoDecoder ' + ('VideoDecoder' in window) + ', VideoEncoder ' + ('VideoEncoder' in window) + ', AudioDecoder ' + ('AudioDecoder' in window) + ', AudioEncoder ' + ('AudioEncoder' in window));
+
+let src = null;   // { file, info, vt, at, vtrak, atrak, vcfg, acfg, rot, dur }
+
+// ---------- Datei einlesen: nur die Kopfdaten (moov), die Bilddaten bleiben in der Datei ----------
+async function readHead(file) {
+  const mp4 = MP4Box.createFile(false);   // false: Bilddaten (mdat) nicht im Speicher halten
+  let info = null, err = null;
+  mp4.onReady = i => { info = i; }; mp4.onError = e => { err = e; };
+  let pos = 0, n = 0; const CH = 1 << 20;
+  while (!info && !err && pos < file.size) {
+    const buf = await file.slice(pos, pos + CH).arrayBuffer(); buf.fileStart = pos;
+    const next = mp4.appendBuffer(buf);
+    pos = typeof next === 'number' && next !== pos ? next : pos + buf.byteLength;
+    if (++n > 4000) throw new Error('Kopfdaten nicht gefunden');
+  }
+  if (err) throw new Error('mp4box: ' + err);
+  if (!info) throw new Error('Keine MP4-Kopfdaten gefunden (ist das eine MP4- oder MOV-Datei?)');
+  return { mp4, info, reads: n };
+}
+// Decoder-Beschreibung (avcC, hvcC …) als Bytes
+function videoDescription(trak) {
+  for (const e of trak.mdia.minf.stbl.stsd.entries) {
+    const box = e.avcC || e.hvcC || e.vpcC || e.av1C;
+    if (box) { const st = new DataStream(undefined, 0, DataStream.BIG_ENDIAN); box.write(st); return new Uint8Array(st.buffer, 8); }
+  }
+  return null;
+}
+function audioDescription(trak) {
+  const e = trak.mdia.minf.stbl.stsd.entries[0], esd = e && e.esds && e.esds.esd;
+  const dcd = esd && esd.descs.find(d => d.tag === 4), dsi = dcd && dcd.descs.find(d => d.tag === 5);
+  return dsi ? dsi.data : null;
+}
+const TRANSFER = { 1: 'BT.709 (SDR)', 6: 'BT.601 (SDR)', 13: 'sRGB (SDR)', 16: 'PQ (HDR10 / HDR10+)', 18: 'HLG (HDR)' }, PRIM = { 1: 'BT.709', 5: 'BT.601', 6: 'BT.601', 9: 'BT.2020' };
+
+$('file').onchange = async () => {
+  const file = $('file').files[0]; if (!file) return;
+  $('opts').hidden = $('resbox').hidden = true; $('infobox').hidden = false; rows($('info'), [['Datei', 'wird gelesen …']]);
+  log('\n=== ' + file.name + ' · ' + fmt(file.size / 1048576) + ' MB · ' + (file.type || 'Typ unbekannt'));
+  try {
+    const t0 = performance.now(), { mp4, info, reads } = await readHead(file);
+    const vt = info.videoTracks[0], at = info.audioTracks[0];
+    if (!vt) throw new Error('Keine Videospur gefunden');
+    const vtrak = mp4.getTrackById(vt.id), atrak = at ? mp4.getTrackById(at.id) : null;
+    const entry = vtrak.mdia.minf.stbl.stsd.entries[0], colr = entry.colr, hv = entry.hvcC;
+    const m = vt.matrix, rot = m ? ((Math.round(Math.atan2(m[1], m[0]) * 180 / Math.PI) % 360) + 360) % 360 : 0;
+    const dur = vt.movie_duration / vt.movie_timescale, fps = vt.nb_samples / (vt.samples_duration / vt.timescale);
+    const bits = hv ? hv.bit_depth_luma_minus8 + 8 : (entry.avcC ? 8 : null);
+    const hdr = colr && colr.colour_type === 'nclx' && [16, 18].includes(colr.transfer_characteristics);
+    const vcfg = { codec: vt.codec.startsWith('vp08') ? 'vp8' : vt.codec, codedWidth: vt.video.width, codedHeight: vt.video.height, description: videoDescription(vtrak) };
+    let vsup = null; try { vsup = await VideoDecoder.isConfigSupported(vcfg); } catch (e) { log('isConfigSupported Video: ' + e.message); }
+    let acfg = null, asup = null;
+    if (at) {
+      acfg = { codec: at.codec, sampleRate: at.audio.sample_rate, numberOfChannels: at.audio.channel_count };
+      const d = audioDescription(atrak); if (d) acfg.description = d;
+      try { asup = 'AudioDecoder' in window ? await AudioDecoder.isConfigSupported(acfg) : null; } catch (e) { log('isConfigSupported Ton: ' + e.message); }
+    }
+    src = { file, info, vt, at, vtrak, atrak, vcfg, acfg: asup && asup.supported ? acfg : null, rot, dur };
+    const list = [
+      ['Datei', `${file.name} · ${fmt(file.size / 1048576)} MB`],
+      ['Dauer', fmt(dur) + ' s'],
+      ['Video', `${vt.codec} · ${vt.video.width} × ${vt.video.height}` + (rot ? ` · gedreht um ${rot}°` : '')],
+      ['Bilder je Sekunde', fmt(fps, 2)],
+      ['Datenrate', fmt(vt.bitrate / 1e6) + ' Mbit/s'],
+      ['Farbtiefe', bits ? bits + ' Bit' : 'unbekannt'],
+      ['Farbraum', colr && colr.colour_type === 'nclx' ? `${PRIM[colr.colour_primaries] || colr.colour_primaries} · ${TRANSFER[colr.transfer_characteristics] || 'Kennlinie ' + colr.transfer_characteristics}` : 'keine Angabe', hdr ? 'bad' : ''],
+      ['Video lesbar', vsup ? (vsup.supported ? 'ja' : 'nein – dieser Browser kann den Codec nicht entschlüsseln') : 'nicht prüfbar', vsup && vsup.supported ? 'ok' : 'bad'],
+      ['Ton', at ? `${at.codec} · ${at.audio.sample_rate} Hz · ${at.audio.channel_count} Kanäle` : 'keine Tonspur'],
+      ['Ton lesbar', at ? (asup ? (asup.supported ? 'ja' : 'nein') : 'nicht prüfbar') : '–', at && asup && asup.supported ? 'ok' : (at ? 'bad' : '')],
+      ['Kopfdaten gelesen in', `${Math.round(performance.now() - t0)} ms (${reads} Stücke, ${vt.nb_samples} Bilder)`],
+    ];
+    rows($('info'), list); list.forEach(([k, v]) => log(k + ': ' + v));
+    $('start').max = Math.max(0, Math.floor(dur - 1)); $('start').value = 0; $('len').value = Math.min(10, Math.max(1, Math.floor(dur)));
+    $('opts').hidden = !(vsup && vsup.supported); $('state').textContent = '';
+  } catch (e) { rows($('info'), [['Fehler', e.message, 'bad']]); log('FEHLER beim Einlesen: ' + e.message); }
+};
+
+// ---------- Bytes der Bilder stückweise aus der Datei holen ----------
+// samples: Liste aus mp4box mit offset, size … ; liefert die Daten in Reihenfolge, liest zusammenhängende Bereiche am Stück
+async function* sampleData(file, samples, from, to) {
+  const MAX = 8 << 20;
+  let i = from;
+  while (i < to) {
+    let j = i, a = samples[i].offset, b = a + samples[i].size;
+    while (j + 1 < to && samples[j + 1].offset >= a && samples[j + 1].offset + samples[j + 1].size - a <= MAX) { j++; b = Math.max(b, samples[j].offset + samples[j].size); }
+    const buf = new Uint8Array(await file.slice(a, b).arrayBuffer());
+    for (let k = i; k <= j; k++) yield { s: samples[k], data: buf.subarray(samples[k].offset - a, samples[k].offset - a + samples[k].size) };
+    i = j + 1;
+  }
+}
+
+// ---------- ein Bild ins Hochformat zeichnen ----------
+const cv = document.createElement('canvas'); cv.width = OUT_W; cv.height = OUT_H;
+const ctx = cv.getContext('2d', { alpha: false });
+const small = document.createElement('canvas'); small.width = 90; small.height = 160; const sctx = small.getContext('2d', { alpha: false });
+function drawRot(c, frame, rot, W, H, cover) {
+  const fw = frame.displayWidth, fh = frame.displayHeight, turned = rot % 180 !== 0, w = turned ? fh : fw, h = turned ? fw : fh;
+  const s = cover ? Math.max(W / w, H / h) : Math.min(W / w, H / h);
+  c.save(); c.translate(W / 2, H / 2); c.rotate(rot * Math.PI / 180); c.drawImage(frame, -fw * s / 2, -fh * s / 2, fw * s, fh * s); c.restore();
+}
+function drawFrame(frame, rot, fit) {
+  if (fit === 'cover') { drawRot(ctx, frame, rot, OUT_W, OUT_H, true); return; }
+  drawRot(sctx, frame, rot, small.width, small.height, true);      // Hintergrund: stark verkleinert, dann weich vergrößert
+  ctx.filter = 'blur(18px) brightness(.7)'; ctx.drawImage(small, -40, -40, OUT_W + 80, OUT_H + 80); ctx.filter = 'none';
+  drawRot(ctx, frame, rot, OUT_W, OUT_H, false);
+}
+
+// ---------- Ausschnitt erzeugen ----------
+async function make() {
+  const { file, vt, at, vtrak, atrak, vcfg, rot } = src;
+  const start = Math.max(0, +$('start').value || 0), len = Math.min(90, Math.max(1, +$('len').value || 10)), end = Math.min(src.dur, start + len);
+  const fit = $('fit').value, wantSound = $('snd').value === 'on' && !!src.acfg && 'AudioEncoder' in window;
+  const T0 = performance.now(); let err = null;
+  const fail = e => { if (!err) { err = e; log('FEHLER: ' + (e && e.message || e)); } };
+  log(`\n--- Erzeuge ${fmt(start)}–${fmt(end)} s · ${fit === 'cover' ? 'Zuschnitt' : 'unscharfer Hintergrund'} · Ton ${wantSound ? 'ja' : 'nein'}`);
+
+  // Ausgabe
+  let ecfg = null;
+  for (const codec of ['avc1.640028', 'avc1.4d0028', 'avc1.42e028', 'avc1.42001f']) {
+    const c = { codec, width: OUT_W, height: OUT_H, bitrate: 5e6, framerate: FPS };
+    try { if ((await VideoEncoder.isConfigSupported(c)).supported) { ecfg = c; break; } } catch (e) {}
+  }
+  if (!ecfg) throw new Error('Dieser Browser kann kein H.264 erzeugen');
+  let aecfg = null;
+  if (wantSound) {
+    const c = { codec: 'mp4a.40.2', sampleRate: at.audio.sample_rate, numberOfChannels: 2, bitrate: 128000 };
+    try { if ((await AudioEncoder.isConfigSupported(c)).supported) aecfg = c; } catch (e) {}
+    if (!aecfg) log('Hinweis: AAC-Ton kann nicht erzeugt werden – Ergebnis ohne Ton');
+  }
+  const muxer = new Mp4Muxer.Muxer({ target: new Mp4Muxer.ArrayBufferTarget(), fastStart: 'in-memory', firstTimestampBehavior: 'offset',
+    video: { codec: 'avc', width: OUT_W, height: OUT_H, frameRate: FPS },
+    ...(aecfg ? { audio: { codec: 'aac', numberOfChannels: 2, sampleRate: aecfg.sampleRate } } : {}) });
+  const venc = new VideoEncoder({ output: (ch, meta) => muxer.addVideoChunk(ch, meta), error: fail }); venc.configure(ecfg);
+
+  // Bilder: ab dem letzten Schlüsselbild vor dem Start entschlüsseln
+  const vs = vtrak.samples, ts = vt.timescale, sec = s => s.cts / ts;
+  let first = 0; for (let i = 0; i < vs.length; i++) { if (sec(vs[i]) > start) break; if (vs[i].is_sync) first = i; }
+  let last = vs.length; for (let i = first; i < vs.length; i++) if (vs[i].dts / ts > end + 1) { last = i; break; }   // 1 s Zugabe wegen umsortierter Bilder
+  const queue = []; let decoded = 0, written = 0, lastOut = -1, firstFrame = null;
+  const vdec = new VideoDecoder({ output: f => queue.push(f), error: fail });
+  vdec.configure({ ...vcfg, optimizeForLatency: false });
+  const step = 1e6 / FPS;
+  const drain = async () => {
+    while (queue.length) {
+      const f = queue.shift(); decoded++;
+      try {
+        const t = f.timestamp - start * 1e6;
+        if (!firstFrame) { firstFrame = { format: f.format, w: f.displayWidth, h: f.displayHeight, cs: f.colorSpace && f.colorSpace.toJSON ? f.colorSpace.toJSON() : null }; log('Erstes Bild: ' + JSON.stringify(firstFrame)); }
+        if (t >= -1 && f.timestamp < end * 1e6) {
+          const n = Math.round(t / step);                       // Bildnummer im Zielraster (30 je Sekunde); doppelte entfallen
+          if (n > lastOut) {
+            drawFrame(f, rot, fit);
+            const o = new VideoFrame(cv, { timestamp: Math.round(n * step), duration: Math.round(step) });
+            venc.encode(o, { keyFrame: written % 60 === 0 }); o.close(); written++; lastOut = n;
+          }
+        }
+      } finally { f.close(); }
+      while (venc.encodeQueueSize > 3 && !err) await sleep(2);
+    }
+  };
+  $('prog').hidden = false; $('prog').value = 0;
+  let fed = 0;
+  for await (const { s, data } of sampleData(file, vs, first, last)) {
+    if (err) break;
+    vdec.decode(new EncodedVideoChunk({ type: s.is_sync ? 'key' : 'delta', timestamp: Math.round(s.cts * 1e6 / ts), duration: Math.round(s.duration * 1e6 / ts), data }));
+    fed++;
+    while ((vdec.decodeQueueSize > 6 || queue.length > 4) && !err) { await drain(); await sleep(1); }
+    await drain();
+    if (fed % 15 === 0) { $('prog').value = fed / (last - first) * (aecfg ? .9 : 1); $('state').textContent = `Bild ${fed} von ${last - first} …`; await sleep(0); }
+  }
+  // Rest abholen. Wichtig: Während flush() weiter Bilder abnehmen und schließen – der Decoder des Handys hat nur
+  // wenige Ausgabepuffer und bleibt sonst stehen (so hing die erste Fassung bei „Bild 360 von 367“).
+  if (!err) {
+    log(`Alle ${fed} Bilder übergeben, warte auf den Decoder (noch ${vdec.decodeQueueSize} in der Schlange)`);
+    $('state').textContent = 'Letzte Bilder …';
+    let done = false, waited = 0; const fl = vdec.flush().then(() => { done = true; }, fail);
+    while (!done && !err) {
+      const before = decoded; await drain(); await sleep(3);
+      waited = decoded === before ? waited + 1 : 0;
+      if (waited === 3000) log(`Hinweis: seit etwa 10 s kein neues Bild (Decoder ${vdec.decodeQueueSize}, Encoder ${venc.encodeQueueSize}, fertig ${decoded})`);
+      if (waited > 9000) { fail(new Error('Decoder liefert keine Bilder mehr (30 s gewartet)')); break; }
+    }
+    if (!err) { await fl; await drain(); }
+  }
+  try { vdec.close(); } catch (e) {}
+  if (err) throw err;
+  const tVideo = performance.now() - T0;
+
+  // Ton: entschlüsseln, auf zwei Kanäle bringen, als AAC neu schreiben
+  let aFrames = 0;
+  if (aecfg) {
+    $('state').textContent = 'Ton …';
+    const as = atrak.samples, ats = at.timescale, sr = aecfg.sampleRate;
+    let a0 = 0; while (a0 < as.length - 1 && (as[a0].cts + as[a0].duration) / ats <= start) a0++;
+    let a1 = a0; while (a1 < as.length && as[a1].cts / ats < end) a1++;
+    const aenc = new AudioEncoder({ output: (ch, meta) => muxer.addAudioChunk(ch, meta), error: fail }); aenc.configure(aecfg);
+    const pending = [];
+    const adec = new AudioDecoder({ output: d => pending.push(d), error: fail }); adec.configure(src.acfg);
+    const pump = () => {
+      while (pending.length) {
+        const d = pending.shift();
+        try {
+          const n = d.numberOfFrames, ch = d.numberOfChannels, out = new Float32Array(n * 2), tmp = new Float32Array(n);
+          d.copyTo(tmp, { planeIndex: 0, format: 'f32-planar' }); out.set(tmp, 0);
+          if (ch > 1) d.copyTo(tmp, { planeIndex: 1, format: 'f32-planar' }); out.set(tmp, n);
+          const t = d.timestamp - start * 1e6;
+          if (t >= -30000 && d.timestamp < end * 1e6) {
+            const ad = new AudioData({ format: 'f32-planar', sampleRate: d.sampleRate, numberOfFrames: n, numberOfChannels: 2, timestamp: Math.max(0, Math.round(t)), data: out });
+            aenc.encode(ad); ad.close(); aFrames += n;
+          }
+        } finally { d.close(); }
+      }
+    };
+    for await (const { s, data } of sampleData(file, as, a0, a1)) {
+      if (err) break;
+      adec.decode(new EncodedAudioChunk({ type: 'key', timestamp: Math.round(s.cts * 1e6 / ats), duration: Math.round(s.duration * 1e6 / ats), data }));
+      while ((adec.decodeQueueSize > 20 || aenc.encodeQueueSize > 20) && !err) { pump(); await sleep(2); }
+      pump();
+    }
+    if (!err) {
+      let done = false; const fl = adec.flush().then(() => { done = true; }, fail);
+      while (!done && !err) { pump(); await sleep(3); }
+      if (!err) { await fl; pump(); await aenc.flush(); }
+    }
+    try { adec.close(); aenc.close(); } catch (e) {}
+    if (err) throw err;
+    log(`Ton: ${fmt(aFrames / sr)} s bei ${sr} Hz`);
+  }
+  await venc.flush(); venc.close(); if (err) throw err;
+  muxer.finalize();
+  const blob = new Blob([muxer.target.buffer], { type: 'video/mp4' }), total = performance.now() - T0, outSecs = written / FPS;
+  $('prog').value = 1;
+  return { blob, list: [
+    ['Ausschnitt', `${fmt(start)}–${fmt(end)} s → ${fmt(outSecs)} s, ${written} Bilder`],
+    ['Entschlüsselte Bilder', `${decoded} (ab Schlüsselbild bei ${fmt(sec(vs[first]))} s)`],
+    ['Rechenzeit', `${fmt(total / 1000)} s (Video ${fmt(tVideo / 1000)} s) = ${fmt(outSecs / (total / 1000), 2)}-fache Echtzeit`, outSecs / (total / 1000) >= 1 ? 'ok' : ''],
+    ['Größe', `${fmt(blob.size / 1048576, 2)} MB · ${OUT_W} × ${OUT_H} · ${ecfg.codec}`],
+    ['Ton im Ergebnis', aecfg ? `AAC, ${fmt(aFrames / aecfg.sampleRate)} s` : (wantSound ? 'nein (nicht möglich)' : 'nein'), aecfg ? 'ok' : ''],
+    ['Farben des ersten Bilds', firstFrame && firstFrame.cs ? `${firstFrame.format} · ${firstFrame.cs.primaries} / ${firstFrame.cs.transfer}` : 'keine Angabe'],
+  ] };
+}
+
+let lastBlob = null;
+$('go').onclick = async () => {
+  if (!src) return;
+  $('go').disabled = true; $('resbox').hidden = true;
+  try {
+    const { blob, list } = await make();
+    lastBlob = blob; rows($('res'), list); list.forEach(([k, v]) => log(k + ': ' + v));
+    const url = URL.createObjectURL(blob); $('out').src = url; $('save').href = url; $('resbox').hidden = false; $('state').textContent = 'Fertig.';
+  } catch (e) { $('state').textContent = 'Fehler: ' + (e && e.message || e); log('ABBRUCH: ' + (e && e.message || e)); }
+  $('prog').hidden = true; $('go').disabled = false;
+};
+$('share').onclick = async () => {
+  if (!lastBlob) return;
+  const f = new File([lastBlob], 'imagiclique-test.mp4', { type: 'video/mp4' });
+  try { if (navigator.canShare && navigator.canShare({ files: [f] })) await navigator.share({ files: [f] }); else log('Teilen wird hier nicht unterstützt'); } catch (e) { log('Teilen: ' + e.message); }
+};
+$('copy').onclick = async () => { try { await navigator.clipboard.writeText($('log').value); $('copy').textContent = 'Kopiert'; setTimeout(() => $('copy').textContent = 'Protokoll kopieren', 1500); } catch (e) { $('log').select(); } };
+</script>
+</body>
+</html>
