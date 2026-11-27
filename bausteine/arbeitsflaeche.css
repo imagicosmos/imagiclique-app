@@ -1,0 +1,84 @@
+/* Baustein „arbeitsflaeche“ – Anordnung von Kopf, Bild, Werkzeugfeld und Themenleiste. Farben aus dem Baustein design (--ds-…).
+   Quelle: Repo imagicosmos/bausteine, arbeitsflaeche/arbeitsflaeche.css. In den Apps eine Kopie: NICHT VON HAND ÄNDERN.
+   Alles liegt im Raster (Grid), nichts über dem Bild; der Behälter der App braucht eine feste Höhe.
+   Schriftgrößen in rem, damit die Schriftgröße des Geräts wirkt. Keine Bewegungen und Übergänge (prefers-reduced-motion ist damit erfüllt). */
+:where(.af){
+  --af-grund:var(--ds-grund, #f4f5f7); --af-flaeche:var(--ds-flaeche, #ffffff); --af-linie:var(--ds-linie, #d9dce3);
+  --af-text:var(--ds-text, #16191f); --af-leise:var(--ds-leise, #596070);
+  --af-akzent:var(--ds-akzent, #4338ca); --af-akzent-zart:var(--ds-akzent-zart, #e3e5fb);
+}
+:where(:root[data-theme=dark]) :where(.af){
+  --af-grund:var(--ds-grund, #0f1115); --af-flaeche:var(--ds-flaeche, #171a20); --af-linie:var(--ds-linie, #2d323c);
+  --af-text:var(--ds-text, #eceef2); --af-leise:var(--ds-leise, #9aa1ae);
+  --af-akzent:var(--ds-akzent, #a5b4fc); --af-akzent-zart:var(--ds-akzent-zart, #272a5c);
+}
+.af{ width:100%; height:100%; min-width:0; min-height:0; overflow:hidden; overflow:clip; display:grid;
+  background:var(--af-flaeche); color:var(--af-text);
+  padding:0 env(safe-area-inset-right, 0px) max(env(safe-area-inset-bottom, 0px), var(--af-tastatur, 0px)) env(safe-area-inset-left, 0px);
+  grid-template:"kopf" auto "buehne" minmax(0, 1fr) "feld" fit-content(45%) "leiste" auto / minmax(0, 1fr); }
+.af.af-ohne-kopf{ padding-top:env(safe-area-inset-top, 0px); }   /* mit Kopf: den oberen Rand hält der Kopf selbst frei (Baustein menue) */
+.af, .af-kopf, .af-liste, .af-buehne, .af-bild, .af-feld, .af-zeile, .af-inhalt, .af-leiste, .af-themenknopf, .af-knopf{ box-sizing:border-box; }
+.af-kopf{ grid-area:kopf; min-width:0; }
+.af-liste{ grid-area:liste; display:none; min-width:0; min-height:0; overflow:auto; overscroll-behavior:contain; padding:12px; border-right:1px solid var(--af-linie); }
+
+/* Bild: füllt die Bühne, das Seitenverhältnis bleibt */
+.af-buehne{ grid-area:buehne; min-width:0; min-height:0; padding:8px; background:var(--af-grund); display:grid; place-items:center; container-type:size; }
+.af-bild{ display:block; max-width:100%; max-height:100%; aspect-ratio:var(--af-verhaeltnis);
+  width:min(100cqw, 100cqh * var(--af-verhaeltnis)); height:auto; min-width:0; min-height:0; }
+
+/* Werkzeugfeld: rollt nur in sich */
+.af-feld{ grid-area:feld; min-width:0; min-height:0; overflow-x:hidden; overflow-y:auto; overscroll-behavior:contain; border-top:1px solid var(--af-linie); outline:none; }
+.af-zeile{ display:flex; flex-direction:column; align-items:center; gap:4px; padding:0 8px; }
+.af-zeile > *{ max-width:100%; }
+.af-blaettern{ display:flex; align-items:center; justify-content:center; gap:8px; }
+.af-seite{ font-size:.875rem; font-variant-numeric:tabular-nums; text-align:center; }
+.af-knopf{ flex:none; min-width:48px; min-height:44px; padding:0; border:0; border-radius:var(--ds-radius-klein, 9px); background:none; color:inherit;
+  font:inherit; font-size:1.5rem; line-height:1; cursor:pointer; touch-action:manipulation; }
+.af-knopf[aria-disabled=true]{ opacity:.35; cursor:default; }
+.af-inhalt{ padding:8px 12px; overflow-wrap:anywhere; }
+.af-titel{ display:none; margin:0 0 8px; font-size:.875rem; font-weight:600; color:var(--af-leise); }
+.af-zu .af-inhalt, .af-thema[hidden], .af-blaettern[hidden]{ display:none; }
+
+/* Themenleiste */
+.af-leiste{ grid-area:leiste; min-width:0; min-height:0; display:flex; gap:2px; overflow:auto hidden; overscroll-behavior:contain; scrollbar-width:none;
+  padding:2px 4px; scroll-padding:0 44px; border-top:1px solid var(--af-linie); }
+.af-leiste::-webkit-scrollbar{ display:none; }
+.af-leiste:empty{ display:none; }
+.af-themenknopf{ flex:1 0 auto; min-width:44px; min-height:56px; padding:4px 2px; border:0; border-radius:10px; background:none; color:var(--af-leise);
+  font:inherit; font-size:.8125rem; line-height:1.2; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px;
+  white-space:nowrap; cursor:pointer; touch-action:manipulation; -webkit-tap-highlight-color:transparent; }
+.af-themenknopf svg{ width:24px; height:24px; flex:none; fill:none; stroke:currentColor; stroke-width:1.9; stroke-linecap:round; stroke-linejoin:round; }
+.af-themenknopf[aria-expanded=true]{ color:var(--af-akzent); background:var(--af-akzent-zart); -webkit-text-stroke:.4px currentColor; }   /* ab 1.1.1 nicht fett: das gewählte Thema wird nicht breiter, nichts rutscht */
+.af-themenknopf:focus-visible, .af-knopf:focus-visible, .af-feld:focus-visible{ outline:3px solid var(--af-akzent); outline-offset:-3px; }
+
+/* Hinweis: Die Leiste geht hier weiter (verdeckte Themen). Liegt nur über der Leiste, nie über dem Bild; lässt Tippen und Wischen durch. */
+.af-mehr-davor::before, .af-mehr-danach::after{ grid-area:leiste; z-index:1; width:44px; pointer-events:none; box-sizing:border-box; padding:0 4px;
+  display:flex; align-items:center; font-size:1.75rem; line-height:1; font-weight:700; color:var(--af-text); margin-top:1px; }
+.af-mehr-davor::before{ content:"‹"; content:"‹" / ""; justify-self:start; justify-content:flex-start; background:linear-gradient(to right, var(--af-flaeche) 45%, transparent); }
+.af-mehr-danach::after{ content:"›"; content:"›" / ""; justify-self:end; justify-content:flex-end; background:linear-gradient(to left, var(--af-flaeche) 45%, transparent); }
+.af.af.af-pc::before, .af.af.af-pc::after, .af.af.af-tastatur::before, .af.af.af-tastatur::after{ content:none; }
+
+/* Tablet: Feld seitlich */
+/* ab 1.2.0: das Feld bekommt alles, was das Bild bei voller Höhe nicht braucht (--af-bildspalte misst der Baustein), höchstens 40rem;
+   hochkant mindestens 21rem, damit Leisten wie am Handy passen (Handy-Test 2.1 in Imagiclique) */
+.af-tablet{ grid-template:"kopf kopf" auto "buehne feld" minmax(0, 1fr) "leiste leiste" auto / minmax(0, 1fr) minmax(min(21rem, 60%), min(40rem, calc(100% - var(--af-bildspalte, 100%)))); }
+.af-tablet > .af-feld, .af-quer > .af-feld, .af-pc > .af-feld{ border-top:0; border-left:1px solid var(--af-linie); }
+/* Querformat mit wenig Höhe: auch die Leiste an die Seite */
+.af-quer{ grid-template:"kopf kopf kopf" auto "buehne feld leiste" minmax(0, 1fr) / minmax(0, 1fr) min(40%, 22rem) auto; }
+.af-quer > .af-leiste{ flex-direction:column; overflow:hidden auto; scroll-padding:44px 0; border-top:0; border-left:1px solid var(--af-linie); }
+.af-quer.af-mehr-davor::before, .af-quer.af-mehr-danach::after{ width:auto; height:44px; margin:0 0 0 1px; padding:2px 0; justify-self:stretch; justify-content:center; }
+.af-quer.af-mehr-davor::before{ content:"▴"; content:"▴" / ""; align-self:start; align-items:flex-start; background:linear-gradient(to bottom, var(--af-flaeche) 45%, transparent); }
+.af-quer.af-mehr-danach::after{ content:"▾"; content:"▾" / ""; align-self:end; align-items:flex-end; background:linear-gradient(to top, var(--af-flaeche) 45%, transparent); }
+/* PC: Liste, Bild, alle Werkzeuge */
+.af-pc{ grid-template:"kopf kopf" auto "buehne feld" minmax(0, 1fr) / minmax(0, 1fr) minmax(min(38%, 22rem), min(40rem, calc(100% - var(--af-bildspalte, 100%)))); }
+.af-pc.af-mit-liste{ grid-template:"kopf kopf kopf" auto "liste buehne feld" minmax(0, 1fr) / min(22%, 13rem) minmax(0, 1fr) minmax(min(38%, 22rem), min(40rem, calc(100% - var(--af-bildspalte, 100%) - min(22%, 13rem)))); }
+.af-pc.af-mit-liste > .af-liste{ display:block; }
+.af-pc > .af-leiste{ display:none; }
+.af-pc .af-titel{ display:block; }
+.af-pc .af-thema + .af-thema{ margin-top:20px; }
+
+/* Bildschirmtastatur offen (am PC ändert sich nichts) */
+.af-tastatur:not(.af-pc) > .af-leiste, .af-tastatur:not(.af-pc) .af-zeile{ display:none; }
+.af-tastatur.af-handy:not(.af-quer){ grid-template-rows:auto minmax(0, 1fr) fit-content(55%) 0; }
+.af-tastatur.af-ohne-bild.af-handy:not(.af-quer){ grid-template-rows:auto 0 minmax(0, 1fr) 0; }
+.af-tastatur.af-ohne-bild.af-handy:not(.af-quer) > .af-buehne{ display:none; }

@@ -1,0 +1,383 @@
+{
+  "format": "imagineuigkeiten",
+  "version": 1,
+  "app": "imagiclique",
+  "eintraege": [
+    {
+      "version": "1.0.250",
+      "datum": "2026-11-28",
+      "punkte": [
+        { "art": "besser", "text": "Auf dem Tablet ist neben dem Bild keine leere Fläche mehr: Die Einstellungen bekommen den Platz, hochkant passen ihre Knöpfe jetzt ohne getrennte Wörter. Die Liste der Gruppen steht erst ab zwei Gruppen da." },
+        { "art": "behoben", "text": "Teilst du Fotos an Imagiclique (zum Beispiel aus Imagicruise) und beginnst neu, stehen Titel und Text des vorigen Status nicht mehr da." }
+      ]
+    },
+    {
+      "version": "1.0.243",
+      "datum": "2026-11-27",
+      "punkte": [
+        { "art": "besser", "text": "Neue Bedienung beim Bearbeiten: Nichts liegt mehr über dem Bild. Unten stehen die Themen Vorlage, Fotos, Text, Sticker, KI & Ort, Stil, Länge und Ton, noch ein Tipp auf das offene Thema klappt es zu und macht das Bild groß. „Zurück“, „Fertig“ (der Haken ✓) und „Teilen“ stehen oben." },
+        { "art": "besser", "text": "Tippe im Bild einfach auf das, was du ändern willst: ein Foto, einen Sticker, eine Karte oder den Text. Noch ein Tipp auf das Foto zeigt das Vollbild, ein Tipp daneben hebt die Auswahl auf. Die Leiste unter dem Bild hat immer dieselben Knöpfe, was gerade nicht geht, ist grau; „Darunter“ wählt, was verdeckt liegt." },
+        { "art": "besser", "text": "Auf Tablet und PC stehen die Einstellungen neben dem Bild. Am PC wechselst du links zwischen deinen Gruppen und springst rechts mit einem Klick zu einem Thema. Fotos und Senden nutzen dort die ganze Breite." },
+        { "art": "neu", "text": "Größe der Knöpfe: Im Menü (⋮) kannst du auf „Groß“ stellen, dann triffst du alle Knöpfe leichter." },
+        { "art": "neu", "text": "Rückgängig beim Bearbeiten: Der Pfeil ↶ oben nimmt die letzte Änderung zurück, ↷ macht sie wieder. Das geht für Vorlage, Stil, Text, Sticker und die Fotos im Bild, bis zu 50 Schritte je Gruppe." }
+      ]
+    },
+    {
+      "version": "1.0.198",
+      "datum": "2026-11-23",
+      "punkte": [
+        { "art": "besser", "text": "Fotos im Bild bearbeitest du jetzt in der großen Vorschau (Knopf ▾ „Mehr Platz“). Das Bearbeitungsfeld lässt sich mit „Einfahren“ wegschieben, dann siehst du das ganze Bild. In der normalen Ansicht öffnet ein Tipp wieder direkt das Vollbild." },
+        { "art": "besser", "text": "Sticker bearbeitest du jetzt wie Fotos: Oben im Bearbeitungsfeld wählst du „Fotos“ oder „Sticker“. Bei „Sticker“ ziehst du ihn an seinen Platz, der gelbe Punkt ändert die Größe, der weiße Kreis dreht, dazu gibt es Vorn, Hinten und Entfernen. Nach „Sticker hinzufügen“ geht das gleich auf." },
+        { "art": "besser", "text": "Bei „Fotos“ bleiben Sticker liegen – so verschiebst du nicht aus Versehen einen Sticker statt des Fotos darunter." }
+      ]
+    },
+    {
+      "version": "1.0.196",
+      "datum": "2026-11-23",
+      "punkte": [
+        { "art": "neu", "text": "Fotos frei anordnen: In den Vorlagen Sofortbild, Pinwand und Album verschiebst du die Fotos samt Rahmen einfach mit dem Finger, auf der Pinwand auch den Zettel mit dem Titel und die Karteikarte. Der gelbe Punkt ändert die Größe, der weiße Kreis dreht, „Vorn“ und „Hinten“ legen ein Foto über oder unter die anderen. „Automatisch“ stellt die ursprüngliche Anordnung wieder her." }
+      ]
+    },
+    {
+      "version": "1.0.193",
+      "datum": "2026-11-22",
+      "punkte": [
+        { "art": "neu", "text": "Fotos direkt in der Vorschau anpassen: Ein Foto antippen, dann ziehen verschiebt nur seinen Ausschnitt. Dazu gibt es Zoom und „Zurücksetzen“. Mit „Tauschen“ ziehst du ein Foto auf ein anderes, dann tauschen beide die Plätze – in jeder Vorlage, auch auf der Pinwand." },
+        { "art": "besser", "text": "Das Vollbild öffnet jetzt, wenn du ein gewähltes Foto noch einmal antippst oder neben die Fotos tippst." }
+      ]
+    },
+    {
+      "version": "1.0.191",
+      "datum": "2026-11-22",
+      "punkte": [
+        { "art": "besser", "text": "Startanimation: Der Zauberstab tippt jetzt auf das „c“, ab dort wird der Name farbig." }
+      ]
+    },
+    {
+      "version": "1.0.187",
+      "datum": "2026-11-22",
+      "punkte": [
+        { "art": "besser", "text": "Sticker entfernen geht jetzt direkt im Bild: Sticker in der Vorschau antippen und auf das rote ✕ tippen." }
+      ]
+    },
+    {
+      "version": "1.0.185",
+      "datum": "2026-11-22",
+      "punkte": [
+        { "art": "neu", "text": "27 neue bewegte Sticker im Comic-Stil: zu Silvester (Feuerwerk, Wunderkerze, Sektkorken, Anstoßen, Glücksschwein …), Winter (Pinguin, Schneekugel, heiße Schokolade …), Herbst (Blätterfall, Igel, Drachen …) und mehr zu Weihnachten (Rentier, Lebkuchenmann …)." },
+        { "art": "neu", "text": "Bewegte Sticker: Unter „Bewegte Sticker“ lässt sich „Still (Bild)“ wählen – dann bleibt ein Bild ein Bild statt eines kurzen Videos." },
+        { "art": "behoben", "text": "Sehr große Videos (über 2 GB, z. B. lange 4K-Aufnahmen) blieben in der Vorschau schwarz. Jetzt spielen sie." }
+      ]
+    },
+    {
+      "version": "1.0.183",
+      "datum": "2026-11-22",
+      "punkte": [
+        { "art": "besser", "text": "Vorlage „Postkarte“: Die Briefmarke ist jetzt quer und zeigt das Zeichen und den Schriftzug von Imagicosmos." }
+      ]
+    },
+    {
+      "version": "1.0.180",
+      "datum": "2026-11-22",
+      "punkte": [
+        { "art": "neu", "text": "Zeitlupe und Zeitraffer für eigene Videos: Unter „Tempo“ ¼× bis 8× wählen – aus 2 Minuten werden mit 8× 15 Sekunden im Status." },
+        { "art": "neu", "text": "Bewegte Sticker zu Weihnachten: Schneefall, funkelnder Stern, flackernde Kerze, Lichterkette, Weihnachtsbaum, Geschenk, Glocke, Schneemann und „Frohe Weihnachten“. Im Reiter Text unter „Sticker hinzufügen“. Ein Bild damit wird als kurzes Video geteilt." }
+      ]
+    },
+    {
+      "version": "1.0.177",
+      "datum": "2026-11-21",
+      "punkte": [
+        { "art": "besser", "text": "Neues Wasserzeichen: Der Zauber-Schriftzug ist jetzt ab dem „c“ grün – wie im Logo." }
+      ]
+    },
+    {
+      "version": "1.0.173",
+      "datum": "2026-11-21",
+      "punkte": [
+        { "art": "neu", "text": "Claude direkt fragen: Mit einem eigenen API-Schlüssel von Anthropic fragt die App Claude selbst – bei der KI-Hilfe für Titel und Text und beim Entwurf des ganzen Status. Die Antwort kommt gleich als Vorschlag, ohne Kopieren und Teilen. Einrichten im Menü ⋮ „Claude direkt“." }
+      ]
+    },
+    {
+      "version": "1.0.171",
+      "datum": "2026-11-21",
+      "punkte": [
+        { "art": "besser", "text": "„Alle fertigen“ senden geht in der Android-App mit einem Tipp: Die App teilt einen Schritt nach dem anderen von selbst, sobald du aus WhatsApp zurück bist. Ein Tipp auf den Knopf hält an." }
+      ]
+    },
+    {
+      "version": "1.0.169",
+      "datum": "2026-11-21",
+      "punkte": [
+        { "art": "besser", "text": "Bei „Alle fertigen“ unter „Senden“ lässt sich eine schon gesendete Gruppe durch Antippen noch einmal mitsenden – zusammen mit den fertigen, noch nicht gesendeten Gruppen. Praktisch, wenn das Senden abgebrochen wurde." }
+      ]
+    },
+    {
+      "version": "1.0.167",
+      "datum": "2026-11-21",
+      "punkte": [
+        { "art": "behoben", "text": "In der Android-App spielte die Vorschau mancher Videos vom Handy nicht ab (nur ein grauer Abspielknopf). Jetzt laufen sie wieder." }
+      ]
+    },
+    {
+      "version": "1.0.165",
+      "datum": "2026-11-21",
+      "punkte": [
+        { "art": "besser", "text": "Videos sind in der Android-App viel schneller geholt: Die App liest nur noch die Stücke, die sie gerade braucht – ein großes Video ist in etwa einer Sekunde im Fotopool statt nach vielen Sekunden." },
+        { "art": "besser", "text": "Die Vorschau des ganzen Status (Auge) spielt jetzt auch eigene Videos ab, statt sie nur kurz als Standbild zu zeigen." },
+        { "art": "besser", "text": "Bei „Alle fertigen“ unter „Senden“ sind alle fertigen Gruppen farbig markiert." }
+      ]
+    },
+    {
+      "version": "1.0.163",
+      "datum": "2026-11-20",
+      "punkte": [
+        { "art": "neu", "text": "Alle fertigen Gruppen auf einmal senden: Unter „Senden“ bei „Was senden?“ „Alle fertigen“ wählen – Bilder hintereinander gehen zusammen in einem Schritt, Videos getrennt." },
+        { "art": "neu", "text": "Gruppen umsortieren: eine Gruppe lange antippen und an die neue Stelle ziehen – in der Leiste oben und in der Liste unter „Senden“." },
+        { "art": "besser", "text": "Fotos und Videos zusammen ausgewählt? „Gruppen bilden“ legt sofort an: die Fotos als eine Gruppe, jedes Video für sich." }
+      ]
+    },
+    {
+      "version": "1.0.161",
+      "datum": "2026-11-20",
+      "punkte": [
+        { "art": "behoben", "text": "In der KI-App (und anderen Apps) kommt jetzt immer das Bild an, das auch in der Vorschau zu sehen ist – vorher konnte es ein Bild von einem früheren Teilen sein." }
+      ]
+    },
+    {
+      "version": "1.0.159",
+      "datum": "2026-11-20",
+      "punkte": [
+        { "art": "behoben", "text": "Teilt die KI-App beim Zurückschicken auch deine Frage mit, nimmt Imagiclique jetzt nur die Antwort – Titel und Text lassen sich wieder übernehmen." },
+        { "art": "besser", "text": "Hält sich die KI nicht genau ans Format (z. B. „Titel: … Text: …“), erkennt die App Titel und Text trotzdem." }
+      ]
+    },
+    {
+      "version": "1.0.157",
+      "datum": "2026-11-20",
+      "punkte": [
+        { "art": "behoben", "text": "„Neu beginnen“ leert jetzt auch die KI-Hilfe: Frage, Antwort und Vorschläge bleiben nicht mehr stehen." },
+        { "art": "behoben", "text": "„Fotos + Frage teilen“ startet sofort, weil die Fotos schon vorbereitet sind; klappt das Teilen nicht, sagt die App warum." }
+      ]
+    },
+    {
+      "version": "1.0.155",
+      "datum": "2026-11-20",
+      "punkte": [
+        { "art": "besser", "text": "Die KI erfährt jetzt, wann deine Fotos aufgenommen wurden – bei der Text-Hilfe und beim Entwurf des ganzen Status." },
+        { "art": "neu", "text": "KI-Hilfe: „Fotos + Frage teilen“ gibt die Fotos der Gruppe mit an die KI-App, damit sie Motiv und Ort erkennt." },
+        { "art": "behoben", "text": "Eine Gruppe ließ sich versehentlich zweimal senden: Solange das Teilen läuft, nimmt der Knopf keinen weiteren Tipp an, und eine schon gesendete Gruppe teilt die App erst nach einer Rückfrage." }
+      ]
+    },
+    {
+      "version": "1.0.153",
+      "datum": "2026-11-20",
+      "punkte": [
+        { "art": "neu", "text": "Neuigkeiten: im Menü ⋮ steht, was sich geändert hat – nach einem Update zeigt die App es einmal von selbst." },
+        { "art": "besser", "text": "Eine Antwort, die du in der KI-App an Imagiclique teilst, landet gleich in der richtigen KI-Hilfe statt im Statustext." }
+      ]
+    },
+    {
+      "version": "1.0.149",
+      "datum": "2026-11-20",
+      "punkte": [
+        { "art": "neu", "text": "Direkt an den WhatsApp-Status: ohne Umweg über das Teilen-Menü – in WhatsApp nur noch auf „Senden“ tippen. Umschalten im Schritt Senden." }
+      ]
+    },
+    {
+      "version": "1.0.146",
+      "datum": "2026-11-19",
+      "punkte": [
+        { "art": "neu", "text": "Aufnahmeort und -datum werden jetzt auch aus Videos gelesen." }
+      ]
+    },
+    {
+      "version": "1.0.144",
+      "datum": "2026-11-19",
+      "punkte": [
+        { "art": "neu", "text": "Videos in der Fotoauswahl der App, mit Filter „Alle · Fotos · Videos“." },
+        { "art": "besser", "text": "Text im Video wahlweise ohne Kasten (wie Untertitel) oder halb durchsichtig." }
+      ]
+    },
+    {
+      "version": "1.0.141",
+      "datum": "2026-11-19",
+      "punkte": [
+        { "art": "besser", "text": "Ladeanzeige beim Einlesen vieler Fotos und Videos." }
+      ]
+    },
+    {
+      "version": "1.0.136",
+      "datum": "2026-11-19",
+      "punkte": [
+        { "art": "behoben", "text": "Vorlage „Magazin“ mit langem Namen, Platzhalter ohne Foto und Instagram-Story mit langem Titel werden richtig gezeichnet." }
+      ]
+    },
+    {
+      "version": "1.0.132",
+      "datum": "2026-11-19",
+      "punkte": [
+        { "art": "besser", "text": "Pinwand und Album folgen dem gewählten Stil; die Fotos sind größer und dürfen sich überlappen." }
+      ]
+    },
+    {
+      "version": "1.0.130",
+      "datum": "2026-11-19",
+      "punkte": [
+        { "art": "behoben", "text": "Die Seite „Stile“ zeigt Liste und Katalog wieder." }
+      ]
+    },
+    {
+      "version": "1.0.127",
+      "datum": "2026-11-19",
+      "punkte": [
+        { "art": "besser", "text": "Rückfragen und Meldungen im einheitlichen Aussehen; die Zurück-Taste schließt eine offene Rückfrage." }
+      ]
+    },
+    {
+      "version": "1.0.125",
+      "datum": "2026-11-19",
+      "punkte": [
+        { "art": "neu", "text": "KI-Entwurf: festlegen, welche Vorlagen und Designs die KI verwenden darf." },
+        { "art": "besser", "text": "Vorlage „Bericht“ ohne das Etikett „BERICHT“ über dem Titel." }
+      ]
+    },
+    {
+      "version": "1.0.123",
+      "datum": "2026-11-19",
+      "punkte": [
+        { "art": "besser", "text": "Diktieren hört weiter zu, bis du „Stopp“ tippst; jedes Textfeld lässt sich mit „Rückgängig“ leeren." }
+      ]
+    },
+    {
+      "version": "1.0.121",
+      "datum": "2026-11-19",
+      "punkte": [
+        { "art": "neu", "text": "Neue Vorlagen: Pinwand, Album, Magazin und Formen (Herz, Kreise, Waben)." },
+        { "art": "neu", "text": "Emojis in Titel und Text sowie Emoji-Sticker zum Verschieben auf dem Bild." },
+        { "art": "besser", "text": "Zurück aus der KI-App springt Imagiclique direkt zu „Antwort einfügen“." }
+      ]
+    },
+    {
+      "version": "1.0.119",
+      "datum": "2026-11-19",
+      "punkte": [
+        { "art": "besser", "text": "Eigene Videos „Mit Gestaltung“ rechnet die Android-App jetzt selbst – deutlich schneller." }
+      ]
+    },
+    {
+      "version": "1.0.115",
+      "datum": "2026-11-19",
+      "punkte": [
+        { "art": "neu", "text": "„Schnell“ für lange Videos: in Sekunden in Status-Teile zerlegt, in Originalqualität." }
+      ]
+    },
+    {
+      "version": "1.0.113",
+      "datum": "2026-11-18",
+      "punkte": [
+        { "art": "behoben", "text": "Die Tastatur verdeckt in der Android-App keine Eingabefelder mehr." },
+        { "art": "besser", "text": "„Übernehmen“ beim Bearbeiten eines Fotos schließt sofort." },
+        { "art": "behoben", "text": "KI-Hilfe: eine neue Frage im selben KI-Chat wird richtig beantwortet." }
+      ]
+    },
+    {
+      "version": "1.0.110",
+      "datum": "2026-11-18",
+      "punkte": [
+        { "art": "neu", "text": "Bildbearbeitung: Begradigen, Wärme und Vignette." },
+        { "art": "neu", "text": "Farben und Filter eines Fotos auf die ganze Gruppe oder alle Fotos übertragen." }
+      ]
+    },
+    {
+      "version": "1.0.108",
+      "datum": "2026-11-18",
+      "punkte": [
+        { "art": "behoben", "text": "„Alle“ in der Fotoauswahl lässt sich zurücknehmen." },
+        { "art": "behoben", "text": "Ein neues Video nimmt den ganzen Clip und wird ab 90 Sekunden aufgeteilt." }
+      ]
+    },
+    {
+      "version": "1.0.106",
+      "datum": "2026-11-18",
+      "punkte": [
+        { "art": "neu", "text": "Vorlage „Countdown“: Tage bis zum Ereignis, mit Foto dahinter." },
+        { "art": "besser", "text": "Fertige Videos bleiben aufgehoben, solange sich nichts ändert – kein erneutes Rechnen." }
+      ]
+    },
+    {
+      "version": "1.0.104",
+      "datum": "2026-11-18",
+      "punkte": [
+        { "art": "neu", "text": "Eigene Videos mit Titel, Text, Musik und Sprachaufnahme." },
+        { "art": "neu", "text": "„Gute Schnittstellen suchen“: lange Videos werden an Szenenwechseln und Sprechpausen geteilt." }
+      ]
+    },
+    {
+      "version": "1.0.102",
+      "datum": "2026-11-18",
+      "punkte": [
+        { "art": "besser", "text": "Neues Aussehen wie in allen Imagi-Apps: Kopf, Startbildschirm, Menü und Seite „Über“ mit Versionsnummer." },
+        { "art": "besser", "text": "Hell und dunkel ohne Aufblitzen beim Öffnen." }
+      ]
+    },
+    {
+      "version": "1.0.99",
+      "datum": "2026-11-18",
+      "titel": "Die Android-App zum Laden",
+      "punkte": [
+        { "art": "neu", "text": "Die Android-App gibt es auf imagiclique.de zum Laden; die Web-App bleibt als zweiter Weg." },
+        { "art": "neu", "text": "Fotos auswählen wie in der Galerie, Aufnahmeort bleibt erhalten." },
+        { "art": "neu", "text": "14 Titelschriften und 15 neue Stile für Jahreszeiten und Anlässe." },
+        { "art": "neu", "text": "Die App meldet neue Fassungen (einmal am Tag, abschaltbar)." }
+      ]
+    },
+    {
+      "version": null,
+      "datum": "2026-11-16",
+      "titel": "Web-App",
+      "punkte": [
+        { "art": "neu", "text": "Ziel wählen: WhatsApp-Status oder Instagram-Story." },
+        { "art": "neu", "text": "Bildbearbeitung: drehen, spiegeln, zuschneiden, automatisch verbessern, Licht, Farbe, Filter – das Original bleibt erhalten." },
+        { "art": "neu", "text": "Im Vollbild durch die Bilder einer Gruppe wischen." },
+        { "art": "besser", "text": "Videos bleiben unter der Teilen-Grenze von 50 MB." }
+      ]
+    },
+    {
+      "version": null,
+      "datum": "2026-11-15",
+      "titel": "Web-App",
+      "punkte": [
+        { "art": "neu", "text": "Arbeiten in Gruppen: Fotopool, jede Gruppe mit eigener Gestaltung, Senden Schritt für Schritt, kurzer Rundgang." },
+        { "art": "neu", "text": "Der Bearbeitungsstand übersteht das Schließen der App." },
+        { "art": "neu", "text": "KI-Hilfe für Texte und KI-Entwurf des ganzen Status (Frage kopieren, Antwort einfügen)." },
+        { "art": "neu", "text": "Stile: Anlass-Stile, Katalog, eigene Stile gestalten und weitergeben." },
+        { "art": "neu", "text": "Eigene Layouts gestalten und als Link teilen." },
+        { "art": "neu", "text": "Eigene Videos als Quelle: Ausschnitt, Hochformat, Aufteilen bei Überlänge." },
+        { "art": "neu", "text": "Link als Bildunterschrift; Musik wahlweise erst in WhatsApp wählen." },
+        { "art": "besser", "text": "Langer Text wird am Satzende getrennt und gleichmäßig auf die Bilder verteilt." }
+      ]
+    },
+    {
+      "version": null,
+      "datum": "2026-11-14",
+      "titel": "Web-App",
+      "punkte": [
+        { "art": "neu", "text": "Bis zu 20 Fotos, neue Vorlagen, Gesamtlänge des Status vorgeben." },
+        { "art": "neu", "text": "Musik und Sprachaufnahme in der Diashow; Sofort-Vorschau mit Zeitraffer." },
+        { "art": "neu", "text": "Mehrere Bilder je Status, langer Text läuft auf dem nächsten Bild weiter." },
+        { "art": "neu", "text": "Bilder und Videos gemischt teilen – in Schritten." }
+      ]
+    },
+    {
+      "version": null,
+      "datum": "2026-11-13",
+      "titel": "Die erste Fassung",
+      "punkte": [
+        { "art": "neu", "text": "Vorlagen Foto + Text, Bericht, Collage und Zitat mit Farbschemata." },
+        { "art": "neu", "text": "Teilen direkt an „Mein Status“ in WhatsApp." },
+        { "art": "neu", "text": "Diashow als Video, Diktieren und Infos zum Ort aus der Wikipedia." }
+      ]
+    }
+  ]
+}
